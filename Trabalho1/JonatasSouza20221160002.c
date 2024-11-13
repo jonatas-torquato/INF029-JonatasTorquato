@@ -91,37 +91,26 @@ int teste(int a)
     pode utilizar strlen para pegar o tamanho da string
  */
 
-struct Data{
-  int dia;
-  int mes;
-  int ano;
-}
-
-int q1(char data[])
-{
+int q1(char data[]){
   int datavalida = 1;
-  int num = 0;
   int i;
-  int digito;
-  int qtde=0;
   int anoBissexto = 0;
-  int dia, mes, ano;
-
+  int dia = 0, mes = 0, ano = 0;
   //quebrar a string data em strings sDia, sMes, sAno
   
   // convertendo para dia
-  for(i=0; str[i] != '/'; i++){
-    dia = dia * 10 + (str[i] - '0');
+  for(i=0; data[i] != '/'; i++){
+    dia = dia * 10 + (data[i] - '0');
   }
 
   // convertendo para mes
-  for(i= i+1; str[i] != '/'; i++){
-    mes = mes * 10 + (str[i] - '0');
+  for(i= i+1; data[i] != '/'; i++){
+    mes = mes * 10 + (data[i] - '0');
   }
 
   // convertendo para ano
-  for(i=0; str[i] != '\0'; i++){
-    ano = ano * 10 + (str[i] - '0');
+  for(i= i+1; data[i] != '\0'; i++){
+    ano = ano * 10 + (data[i] - '0');
   }
 
   // validando ano
@@ -133,8 +122,10 @@ int q1(char data[])
   
   // Verificando se é ano bissexto
 
-  if((((ano % 4) == 0) && ((ano % 100) == 0)) || ((ano % 400) == 0)){
-    anoBissexto=1;
+  if(((ano % 4) == 0 && (ano % 100) != 0) || (ano % 400) == 0){
+    anoBissexto= 1;
+  } else{
+    anoBissexto= 0;
   }
 
   // validando mes
@@ -147,16 +138,30 @@ int q1(char data[])
 
   // validando dia
 
-  if(anoBissexto != 1){
-    if((mes == 2) && ((dia >= 1) && (dia <= 28))){
+  if(mes == 2){
+    if(anoBissexto == 0){
+      if((dia >= 1) && (dia <= 28)){
+        datavalida = 1;
+      } else{
+        datavalida = 0;
+      }
+    } else if(anoBissexto == 1){
+      if((dia >= 1) && (dia <= 29)){
+        datavalida = 1;
+      } else{
+        datavalida = 0;
+      }
+    }
+  } else if(mes == 1 || mes == 3 || mes == 5 || mes == 7 || mes == 8 || mes == 10 || mes == 12){
+    if((dia >= 1) && (dia <= 31)){
       datavalida = 1;
-    } else if((mes == 2) && ((dia >= 1) && (dia >= 29))){
+    } else{
       datavalida = 0;
     }
-  } else if(anoBissexto == 1){
-    if((mes == 2) && ((dia >= 1) && (dia <= 29))){
+  } else if(mes == 4 || mes == 6 || mes == 9 || mes == 11){
+    if((dia >= 1) && (dia <= 30)){
       datavalida = 1;
-    } else if((mes == 2) && ((dia >= 1) && (dia >= 30))){
+    } else{
       datavalida = 0;
     }
   }
