@@ -261,9 +261,49 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
  @saida
     Um número n >= 0.
  */
+
 int q3(char *texto, char c, int isCaseSensitive)
 {
-    int qtdOcorrencias = -1;
+    int qtdOcorrencias = 0;
+    int tam = 0;
+    int i;
+    char aux[250];
+
+    for(i=0; texto[i] != '\0'; i++){
+      tam++;
+    }
+
+    // Copiando o texto para uma string auxiliar
+
+    for(i=0; i<tam; i++){
+      aux[i] = texto[i];
+    }
+
+    if(isCaseSensitive == 1){
+      // Localizar o caractere
+      for(i=0; i<tam; i++){
+        if(c == texto[i]){
+          qtdOcorrencias++;
+        }
+      }
+    } else if(isCaseSensitive != 1){
+      // Converter o caracter em minusculo
+      if((c >= 'A') && (c <= 'Z')){
+        c += 32;
+      }
+      // Converter a string auxiliar em minusculo
+      for(i=0; i<tam; i++){
+        if((aux[i] >= 'A') && (aux[i] <= 'Z')){
+          aux[i] = aux[i] + 32;
+        }
+      }
+      // Localizar o caractere
+      for(i=0; i<tam; i++){
+        if(c == aux[i]){
+          qtdOcorrencias++;
+        }
+      }
+    }
 
     return qtdOcorrencias;
 }
