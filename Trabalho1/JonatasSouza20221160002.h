@@ -50,5 +50,6 @@ int q4(char *strTexto, char *strBusca, int posicoes[30]);
 int q5(int num);
 int q6(int numerobase, int numerobusca);
 DataQuebrada quebraData(char data[]);
+//int TotalDeDias (int dia, int mes, int ano);
 
 #endif  // TRABALHO1_PRIMEIROULTIMONOMEMATRICULA_H

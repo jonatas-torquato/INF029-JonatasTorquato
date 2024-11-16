@@ -26,6 +26,7 @@
 #include <stdlib.h>
 
 DataQuebrada quebraData(char data[]);
+//int TotalDeDias(int dia, int mes, int ano);
 
 /*
 ## função utilizada para testes  ##
@@ -97,21 +98,15 @@ int q1(char data[]){
   int anoBissexto = 0;
   int dia = 0, mes = 0, ano = 0;
   //quebrar a string data em strings sDia, sMes, sAno
-  
-  // convertendo para dia
-  for(i=0; data[i] != '/'; i++){
-    dia = dia * 10 + (data[i] - '0');
+
+  DataQuebrada dq = quebraData(data);
+  if (dq.valido != 1) {
+      datavalida = 0;
   }
 
-  // convertendo para mes
-  for(i= i+1; data[i] != '/'; i++){
-    mes = mes * 10 + (data[i] - '0');
-  }
-
-  // convertendo para ano
-  for(i= i+1; data[i] != '\0'; i++){
-    ano = ano * 10 + (data[i] - '0');
-  }
+  dia = dq.iDia;
+  mes = dq.iMes;
+  ano = dq.iAno;
 
   // validando ano
   if((ano >= 1000) && (ano <= 2025)){
@@ -119,7 +114,7 @@ int q1(char data[]){
   } else{
     datavalida = 0;
   }
-  
+
   // Verificando se é ano bissexto
 
   if(((ano % 4) == 0 && (ano % 100) != 0) || (ano % 400) == 0){
@@ -191,8 +186,14 @@ int q1(char data[]){
  */
 DiasMesesAnos q2(char datainicial[], char datafinal[])
 {
+    int diaDi, mesDi, anoDi, diaDf, mesDf, anoDf; // dia, mes, ano inicial e final
+    int difDia=0, difMes=0, difAno=0;
+    DataQuebrada dqInicial, dqFinal;
 
+    int totalDiasInicial, totalDiasFinal, totalDias;
+    int i;
     //calcule os dados e armazene nas três variáveis a seguir
+    
     DiasMesesAnos dma;
 
     if (q1(datainicial) == 0){
@@ -201,18 +202,53 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
     }else if (q1(datafinal) == 0){
       dma.retorno = 3;
       return dma;
-    }else{
+    }else if (q1(datainicial) > q1(datafinal)){
       //verifique se a data final não é menor que a data inicial
-      
+      dma.retorno = 4;
+      return dma;
+    } else{
       //calcule a distancia entre as datas
+      DataQuebrada dqInicial = quebraData(datainicial);
+      diaDi = dqInicial.iDia; mesDi = dqInicial.iMes; anoDi = dqInicial.iAno;
 
+      DataQuebrada dqFinal = quebraData(datafinal);
+      diaDf = dqFinal.iDia; mesDf = dqFinal.iMes; anoDf = dqFinal.iAno;
+
+      if(anoDf < anoDi || (anoDf == anoDi && mesDf < mesDi) || (anoDf == anoDi && mesDf == mesDi && diaDf < diaDi)){
+        dma.retorno = 4;
+        return dma;
+      }
+      
+      difAno = anoDf - anoDi;
+      difMes = mesDf - mesDi;
+      difDia = diaDf - diaDi;
+
+      if(difDia < 0){
+        difMes--;
+        if(((mesDf - 1) == 2) && (((anoDf % 4) == 0 && (anoDf % 100) != 0) || (anoDf % 400) == 0)){
+          difDia += 29;
+        } else if((mesDf - 1) == 2){
+          difDia += 28;
+        } else if(mesDf == 1 || mesDf == 3 || mesDf == 5 || mesDf == 7 || mesDf == 8 || mesDf == 10 || mesDf == 12){
+          difDia += 31;
+        } else if(mesDf == 4 || mesDf == 6 || mesDf == 9 || mesDf == 11){
+          difDia += 30;
+        }
+      }
+
+      if(difMes < 0){
+        difAno--;
+        difMes += 12;
+      }
+
+      dma.qtdAnos = difAno;
+      dma.qtdMeses = difMes;
+      dma.qtdDias = difDia;
 
       //se tudo der certo
       dma.retorno = 1;
-      return dma;
-      
+      return dma; 
     }
-    
 }
 
 /*
@@ -346,3 +382,34 @@ DataQuebrada quebraData(char data[]){
     
   return dq;
 }
+
+/*
+
+int TotalDeDias(int dia, int mes, int ano){
+  int totalDias = dia;
+  int i;
+
+  // Adiciona os dias dos meses anteriores no mesmo ano
+  for (i=1; i<mes; i++) {
+    if(i == 2){
+      if(((ano % 4) == 0 && (ano % 100) != 0) || (ano % 400) == 0){
+        totalDias += 29;
+      } else{
+        totalDias += 28;
+      }
+    } else if(mes == 1 || mes == 3 || mes == 5 || mes == 7 || mes == 8 || mes == 10 || mes == 12){
+      totalDias += 31;
+    } else if (i == 4 || i == 6 || i == 9 || i == 11){
+      totalDias += 30;
+    }
+  }
+  
+  // Colocando os dias dos anos anteriores
+  if(((ano % 4) == 0 && (ano % 100) != 0) || (ano % 400) == 0){
+    totalDias += (ano - 1) * 366; 
+  } else{
+    totalDias += (ano - 1) * 365;
+  }
+
+  return totalDias;
+} */
