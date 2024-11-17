@@ -342,6 +342,17 @@ int q4(char *strTexto, char *strBusca, int posicoes[30])
 
 int q5(int num)
 {
+    int auxiliar = num;
+    int digito = 0;
+    int numInvertido = 0;
+
+    while (auxiliar != 0){
+        digito = auxiliar % 10; // Pega o ultimo digito do numero inteiro
+        numInvertido *= 10;
+        numInvertido += digito;
+        auxiliar = auxiliar / 10; // Faz a nova divisão
+    }
+    num = numInvertido;
 
     return num;
 }
