@@ -369,11 +369,73 @@ int q5(int num)
 
 int q6(int numerobase, int numerobusca)
 {
-    int qtdOcorrencias;
+    int qtdOcorrencias = 0;
+
+    int aux1 = numerobase, aux2 = numerobusca;
+    int digito1 = 0, digito2 = 0;
+    int numInvertido1 = 0, numInvertido2 = 0;
+    int tam1 = 0, tam2 = 0;
+
+    // -------- NumeroBase ---------
+    // Invertendo o numerobase
+    while (aux1 != 0) {
+        digito1 = aux1 % 10;
+        numInvertido1 = numInvertido1 * 10 + digito1;
+        tam1++;
+        aux1 /= 10;
+    }
+
+    int vetor1[tam1];
+    int i = 0;
+
+    // Preenchendo vetor1 do numerobase
+    while (numInvertido1 != 0) {
+        digito1 = numInvertido1 % 10;
+        vetor1[i++] = digito1;
+        numInvertido1 /= 10;
+    }
+
+    // -------- NumeroBusca ---------
+    // Invertendo o numerobusca
+    while (aux2 != 0) {
+        digito2 = aux2 % 10;
+        numInvertido2 = numInvertido2 * 10 + digito2;
+        tam2++;
+        aux2 /= 10;
+    }
+
+    int vetor2[tam2];
+    i = 0;
+
+    // Preenchendo vetor2 do numerobusca
+    while (numInvertido2 != 0) {
+        digito2 = numInvertido2 % 10;
+        vetor2[i++] = digito2;
+        numInvertido2 /= 10;
+    }
+
+    if (tam2 > tam1) {
+        return 0;
+    }
+
+    // Busca Sequencial para encontrar o vetor2 numerobusca no vetor1 numerobase
+    int j, encontrado;
+
+    for (i = 0; i <= tam1 - tam2; i++) {
+        encontrado = 1;
+        for (j = 0; j < tam2; j++) {
+            if (vetor1[i + j] != vetor2[j]) {
+                encontrado = 0;
+                break;
+            }
+        }
+        if (encontrado == 1) {
+            qtdOcorrencias++;
+        }
+    }
+
     return qtdOcorrencias;
 }
-
-
 
 
 DataQuebrada quebraData(char data[]){
