@@ -24,8 +24,10 @@
 #include <stdio.h>
 #include "JonatasSouza20221160002.h" // Substitua pelo seu arquivo de header renomeado
 #include <stdlib.h>
+#include <string.h>
 
 DataQuebrada quebraData(char data[]);
+int converterString(char *string, char *newString);
 //int TotalDeDias(int dia, int mes, int ano);
 
 /*
@@ -325,9 +327,45 @@ int q3(char *texto, char c, int isCaseSensitive)
  */
 int q4(char *strTexto, char *strBusca, int posicoes[30])
 {
-    int qtdOcorrencias = -1;
+  int qtdOcorrencias = 0;
+  int i, j, k = 0;
+  int tamTexto = 0, tamBusca = 0;
 
-    return qtdOcorrencias;
+  char newStrTexto[250];
+  char newStrBusca[50];
+  
+  // Converte as strings com caracteres especiais
+  converterString(strTexto, newStrTexto);
+  converterString(strBusca, newStrBusca);
+
+  // Calcula o tamanho das strings convertidas
+  for (i = 0; newStrTexto[i] != '\0'; i++){
+    tamTexto++;
+  }
+
+  for (i = 0; newStrBusca[i] != '\0'; i++){
+    tamBusca++;
+  }
+
+  // Busca pela ocorrência de strBusca na strTexto
+  for (i = 0; i <= tamTexto - tamBusca; i++){
+    int encontrado = 1;
+    for (j = 0; j < tamBusca; j++){
+      if (newStrBusca[j] != newStrTexto[j+i]){
+        encontrado = 0;
+        break;
+      }
+    }
+
+    if (encontrado){
+      qtdOcorrencias++;
+      posicoes[k] = i + 1;
+      posicoes[k+1] = i + tamBusca;
+      k += 2;
+    }
+  }
+
+  return qtdOcorrencias;
 }
 
 /*
@@ -494,6 +532,43 @@ DataQuebrada quebraData(char data[]){
 	dq.valido = 1;
     
   return dq;
+}
+
+int converterString(char *string, char *newString) {
+  char comAcento[][4] = {"Ä", "Á", "Â", "À", "Ã", "ä", "á", "â", "à", "ã",
+                          "É", "Ê", "Ë", "È", "é", "ê", "ë", "è",
+                          "Í", "Î", "Ï", "Ì", "í", "î", "ï", "ì",
+                          "Ö", "Ó", "Ô", "Ò", "Õ", "ö", "ó", "ô", "ò", "õ",
+                          "Ü", "Ú", "Û", "Ù", "ü", "ú", "û", "ù",
+                          "Ç", "ç"};
+  char semAcento[] = "AAAAAaaaaaEEEEeeeeIIIIiiiiOOOOOoooooUUUUuuuuCc";
+  
+  int i = 0, j=0, k = 0, encontrado;
+  while (string[i] != '\0'){
+    encontrado = 0;
+
+    // Verifica se é um caractere multibyte (UTF-8)
+    if((unsigned char)string[i] >= 192){ // Se for multibyte (maior que 192)
+      char temp[4] = {string[i], string[i + 1], '\0'}; // Captura 2 bytes (ex: 'a' e '~')
+      for (j=0; j < 46; j++){
+        if(strcmp(temp, comAcento[j]) == 0){
+          newString[k++] = semAcento[j];
+          encontrado = 1;
+          break;
+        }
+      }
+      i++;
+    }
+
+    // Caso seja caractere simples (ASCII) ou não mapeado
+    if (encontrado != 1){
+      newString[k++] = string[i];
+    }
+    i++;
+  }
+
+  newString[k] = '\0'; // Finaliza a nova string
+  return k;            // Retorna o tamanho da nova string
 }
 
 /*
