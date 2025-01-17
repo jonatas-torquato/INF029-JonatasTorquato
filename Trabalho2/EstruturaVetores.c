@@ -15,13 +15,13 @@ typedef struct EstruturaAuxiliar{
 EstruturaAuxiliar estruturaAuxiliar[TAM];
 
 void inicializar(){
-    // Inicializa cada posição
-    for (int i = 0; i < TAM; i++) {
+    for(int i=0; i<TAM; i++) {
         estruturaAuxiliar[i].elementos = NULL;
         estruturaAuxiliar[i].quantidade = 0;
         estruturaAuxiliar[i].tamanho = 0;
     }
 }
+
 /*
 Objetivo: criar estrutura auxiliar na posição 'posicao'.
 com tamanho 'tamanho'
@@ -85,7 +85,6 @@ int inserirNumeroEmEstrutura(int posicao, int valor)
 
     int i = 0;
     posicao = posicao - 1;
-    int tamanhoAux = estruturaAuxiliar[posicao].tamanho - 1;
     int quantidade = estruturaAuxiliar[posicao].quantidade;
 
     if((posicao < 0) || (posicao >= TAM)){
@@ -94,14 +93,15 @@ int inserirNumeroEmEstrutura(int posicao, int valor)
     if(estruturaAuxiliar[posicao].elementos == NULL){
         return SEM_ESTRUTURA_AUXILIAR;
     }
-    if(estruturaAuxiliar[posicao].quantidade >= tamanhoAux){
+    if(estruturaAuxiliar[posicao].quantidade >= estruturaAuxiliar[posicao].tamanho){
         return SEM_ESPACO;
     }
 
     estruturaAuxiliar[posicao].elementos[quantidade] = valor; // insere o valor na Estrutura
-    estruturaAuxiliar[posicao].quantidade = estruturaAuxiliar[posicao].quantidade + 1; // incrementa a quantidade de elementos da Estrutura
+    estruturaAuxiliar[posicao].quantidade++; // incrementa a quantidade de elementos da Estrutura
     return SUCESSO;
 }
+
 /*
 
     if((posicao < 0) || (posicao >= TAM)){
@@ -304,6 +304,18 @@ int getDadosDeTodasEstruturasAuxiliares(int vetorAux[])
     int j = 0;
     int k = 0;
     int vazio = 0;
+
+    for (int i = 0; i < TAM; i++) {
+        if (estruturaAuxiliar[i].quantidade == 0 || estruturaAuxiliar[i].elementos == NULL) {
+            vazio++;
+            continue;
+        }
+
+        for (int j = 0; j < estruturaAuxiliar[i].quantidade; j++) {
+            vetorAux[k] = estruturaAuxiliar[i].elementos[j];
+            k++;
+        }
+    }
     
     for(i=0; i < TAM; i++){
         for(j=0; j < estruturaAuxiliar[i].quantidade; j++){
@@ -338,27 +350,26 @@ int getDadosOrdenadosDeTodasEstruturasAuxiliares(int vetorAux[])
     int j = 0;
     int k = 0;
     int vazio = 0;
-    int tamanho = 0;
     int auxiliar = 0;
 
-    for(i=0; i < TAM; i++){
-        for(j=0; j < estruturaAuxiliar[i].quantidade; j++){
-            if(estruturaAuxiliar[i].quantidade == 0){
-                vazio++;
-            } else{
-                vetorAux[k] = estruturaAuxiliar[i].elementos[j];
-                k++; 
-            }
+    for (int i = 0; i < TAM; i++) {
+        if (estruturaAuxiliar[i].quantidade == 0 || estruturaAuxiliar[i].elementos == NULL) {
+            vazio++;
+            continue; // Pula para o próximo índice se a estrutura estiver vazia
         }
-        tamanho = k;
+        for (int j = 0; j < estruturaAuxiliar[i].quantidade; j++) {
+            vetorAux[k] = estruturaAuxiliar[i].elementos[j];
+            k++;
+        }
     }
+
 
     if(vazio == 10){
         return TODAS_ESTRUTURAS_AUXILIARES_VAZIAS;
     }
 
-    for(i=0; i < tamanho; i++){
-        for(j=0; j < tamanho - i - 1; j++){
+    for(i=0; i < k; i++){
+        for(j=0; j < k - i - 1; j++){
             if(vetorAux[j] > vetorAux[j+1]){
                 auxiliar = vetorAux[j];
                 vetorAux[j] = vetorAux[j+1];
@@ -496,6 +507,13 @@ Retorno void
 */
 void getDadosListaEncadeadaComCabecote(No *inicio, int vetorAux[])
 {
+    int i = 0;
+    No *valor = inicio->prox;
+
+    while(valor != NULL){
+        vetorAux[i++] = valor->conteudo;
+        valor = valor->prox;
+    }    
 }
 
 /*
@@ -506,7 +524,15 @@ Retorno
     void.
 */
 void destruirListaEncadeadaComCabecote(No **inicio)
-{
+{   
+    int i = 0;
+    No *value = *inicio;
+
+    while(value != NULL){
+        No *prox = value->prox;
+        free(value);
+        value = prox;
+    }
 }
 
 
@@ -515,14 +541,7 @@ Objetivo: inicializa o programa. deve ser chamado ao inicio do programa
 
 */
 
-/*void inicializar()
-{
-    for(int i=0; i<TAM; i++){
-        estruturaAuxiliar[i].elementos = NULL;
-        estruturaAuxiliar[i].tamanho = 0;
-        estruturaAuxiliar[i].quantidade = 0;
-    }
-}*/
+//
 
 /*
 Objetivo: finaliza o programa. deve ser chamado ao final do programa 
@@ -531,6 +550,9 @@ para poder liberar todos os espaços de memória das estruturas auxiliares.
 */
 
 void finalizar()
-{
-    free(estruturaAuxiliar);
+{   
+    for(int i=0; i<TAM; i++){
+        free(estruturaAuxiliar[i].elementos);
+        estruturaAuxiliar[i].elementos = NULL; 
+    }
 }
