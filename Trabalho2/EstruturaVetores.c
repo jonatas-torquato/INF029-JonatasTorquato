@@ -407,7 +407,7 @@ int modificarTamanhoEstruturaAuxiliar(int posicao, int novoTamanho)
     }
 
     int tamanhoInicial = estruturaAuxiliar[posicao].tamanho;
-    int tamanhoFinal = tamanhoFinal + novoTamanho;
+    int tamanhoFinal = tamanhoInicial + novoTamanho;
 
     if(tamanhoFinal < 1){
         return NOVO_TAMANHO_INVALIDO;
