@@ -154,7 +154,6 @@ int inserirNumeroEmEstrutura(int posicao, int valor)
 
     estruturaAuxiliar[posicao].elementos[quantidade] = valor; // insere o valor na Estrutura
     estruturaAuxiliar[posicao].quantidade++; // incrementa a quantidade de elementos da Estrutura
-    salvarArquivo("dados.txt");
     return SUCESSO;
 }
 
@@ -171,7 +170,6 @@ int excluirNumeroDoFinaldaEstrutura(int posicao)
             } else{
                 estruturaAuxiliar[posicao].elementos[tamanho--];
                 estruturaAuxiliar[posicao].quantidade--;
-                salvarArquivo("dados.txt");
                 return SUCESSO;
             }
         } else{
@@ -208,7 +206,6 @@ int excluirNumeroEspecificoDeEstrutura(int posicao, int valor)
                 }
                 
                 estruturaAuxiliar[posicao].quantidade = estruturaAuxiliar[posicao].quantidade - 1;
-                salvarArquivo("dados.txt");
                 return SUCESSO;
             }
         } else{
@@ -379,7 +376,6 @@ int modificarTamanhoEstruturaAuxiliar(int posicao, int novoTamanho)
             estruturaAuxiliar[posicao].elementos[i] = 0; // Inicializa com 0
         }
     }
-
     return SUCESSO;
 }
 
@@ -461,6 +457,8 @@ void destruirListaEncadeadaComCabecote(No **inicio)
 
 void finalizar()
 {   
+    salvarArquivo("dados.txt");
+    
     for(int i=0; i<TAM; i++){
         free(estruturaAuxiliar[i].elementos);
         estruturaAuxiliar[i].elementos = NULL; 
