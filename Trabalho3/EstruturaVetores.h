@@ -29,7 +29,7 @@ void getDadosListaEncadeadaComCabecote(No *inicio, int vetorAux[]);
 void destruirListaEncadeadaComCabecote(No **inicio);
 
 int carregarArquivo(const char *dados);
-void salvarArquivo(const char *dados);
+int salvarArquivo(const char *dados);
 
 void inicializar();
 void finalizar();

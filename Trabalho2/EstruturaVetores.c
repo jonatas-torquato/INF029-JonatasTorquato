@@ -12,9 +12,11 @@ typedef struct EstruturaAuxiliar{
     int tamanho;
 } EstruturaAuxiliar;
 
-EstruturaAuxiliar estruturaAuxiliar[TAM];
+EstruturaAuxiliar *estruturaAuxiliar;
 
 void inicializar(){
+    estruturaAuxiliar = malloc(sizeof(EstruturaAuxiliar) * TAM);
+
     for(int i=0; i<TAM; i++) {
         estruturaAuxiliar[i].elementos = NULL;
         estruturaAuxiliar[i].quantidade = 0;

@@ -13,14 +13,17 @@ typedef struct EstruturaAuxiliar{
     int tamanho;
 } EstruturaAuxiliar;
 
-EstruturaAuxiliar estruturaAuxiliar[TAM];
+EstruturaAuxiliar *estruturaAuxiliar;
 
 void inicializar(){
+    estruturaAuxiliar = malloc(sizeof(EstruturaAuxiliar) * TAM);
+
     for(int i=0; i<TAM; i++) {
         estruturaAuxiliar[i].elementos = NULL;
         estruturaAuxiliar[i].quantidade = 0;
         estruturaAuxiliar[i].tamanho = 0;
     }
+    carregarArquivo("dados.txt");
 }
 /* 
     Objetivo: Escrever no arquivo 'dados.txt' a posição do VetorPrincipal, seguido do tamanho da 
@@ -29,7 +32,18 @@ void inicializar(){
 */
 int carregarArquivo(const char *dados){ 
     FILE *arquivo = fopen(dados, "r");
-    if(arquivo != NULL){
+    // Se não existir arquivo, tenta criar um arquivo.
+    if(arquivo == NULL){
+        arquivo = fopen(dados, "w");
+        if(arquivo == NULL){
+        // Erro ao criar arquivo
+            printf("Arquivo inexistente.\nErro ao criar arquivo.\n");
+            return ERROR;
+        } else{
+        // Sucesso ao criar arquivo
+            printf("Arquivo inexistente. Arquivo criado com sucesso.\n");
+        }
+    } else{
         int posicao;
         int tamanho;
         int numero;
@@ -76,9 +90,12 @@ int carregarArquivo(const char *dados){
     Posição, tamanho e os elementos das Estruturas Auxiliares.
 */
 
-void salvarArquivo(const char *dados){
+int salvarArquivo(const char *dados){
     FILE *arquivo = fopen("dados.txt", "w");
-    if(arquivo != NULL){
+    if(arquivo == NULL){
+        printf("Erro ao abrir arquivo.\n");
+        return ERROR;
+    } else{
         for(int i = 0; i<TAM; i++){
             EstruturaAuxiliar *temp = &estruturaAuxiliar[i];
 
@@ -91,8 +108,9 @@ void salvarArquivo(const char *dados){
                 fprintf(arquivo, "\n");
             }
         }
-        fclose(arquivo);
     }
+    fclose(arquivo);
+    return SUCESSO;
 }
 
 int criarEstruturaAuxiliar(int posicao, int tamanho)

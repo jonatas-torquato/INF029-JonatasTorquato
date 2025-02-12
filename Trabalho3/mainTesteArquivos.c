@@ -20,10 +20,8 @@ void testarArquivoSegundaVez();
 int main()
 {
     inicializar();
-    carregarArquivo("dados.txt");
     testarArquivoPrimeiraVez();
     testarArquivoSegundaVez();
-    salvarArquivo("dados.txt");
     /*testeInserirSemNada();
     testeCriarEstrutura();
     testeInserirComEstrutura();
