@@ -16,6 +16,23 @@ typedef struct EstruturaAuxiliar{
 EstruturaAuxiliar *estruturaAuxiliar;
 
 void inicializar(){
+    const char *dados = "dados.txt";
+    FILE *arquivo = fopen(dados, "r");
+
+    if(arquivo == NULL){
+        arquivo = fopen(dados, "w");
+        if(arquivo == NULL){
+            printf("Erro ao criar arquivo.\n");
+            fclose(arquivo);
+            return;
+        } else{
+            printf("Arquivo criado.\n");
+        }
+    } else{
+        printf("Arquivo encontrado.\n");
+    }
+    fclose(arquivo);
+
     estruturaAuxiliar = malloc(sizeof(EstruturaAuxiliar) * TAM);
 
     for(int i=0; i<TAM; i++) {
@@ -24,93 +41,6 @@ void inicializar(){
         estruturaAuxiliar[i].tamanho = 0;
     }
     carregarArquivo("dados.txt");
-}
-/* 
-    Objetivo: Escrever no arquivo 'dados.txt' a posição do VetorPrincipal, seguido do tamanho da 
-    Estrutura Auxiliar, e se houver, escrever também os elementos da estrutura auxiliar.
-    Cada número é separado pelo sinal de ponto e vírgula.
-*/
-int carregarArquivo(const char *dados){ 
-    FILE *arquivo = fopen(dados, "r");
-    // Se não existir arquivo, tenta criar um arquivo.
-    if(arquivo == NULL){
-        arquivo = fopen(dados, "w");
-        if(arquivo == NULL){
-        // Erro ao criar arquivo
-            printf("Arquivo inexistente.\nErro ao criar arquivo.\n");
-            return ERROR;
-        } else{
-        // Sucesso ao criar arquivo
-            printf("Arquivo inexistente. Arquivo criado com sucesso.\n");
-        }
-    } else{
-        int posicao;
-        int tamanho;
-        int numero;
-        int retorno;
-
-        char line[5000];
-
-        while(fgets(line, sizeof(line), arquivo) != NULL){
-            line[strcspn(line, "\n")] = '\0';
-
-            char *slice = strtok(line, ";");
-            if(slice == NULL){
-                continue;
-            }
-            // Lê a posicao
-            posicao = atoi(slice) - 1;
-            // Slice vai armazernar o conteúdo que vier depois do ; se for diferente de NULL;
-            slice = strtok(NULL, ";");
-            // Lê o tamanho;
-            tamanho = atoi(slice);
-
-            retorno = criarEstruturaAuxiliar(posicao, tamanho);
-
-            if(retorno != SUCESSO){
-                fclose(arquivo);
-                return ERROR;
-            }
-
-            while((slice = strtok(NULL, ";")) != NULL){
-                retorno = inserirNumeroEmEstrutura(posicao, atoi(slice));
-                if(retorno != SUCESSO){
-                    fclose(arquivo);
-                    return ERROR;
-                }
-            }
-        }
-        fclose(arquivo);
-        return SUCESSO;
-    }
-}
-
-/*
-    Objetivo: salvar todos os dados das Estruturas Auxiliares no arquivo 'dados.txt'.
-    Posição, tamanho e os elementos das Estruturas Auxiliares.
-*/
-
-int salvarArquivo(const char *dados){
-    FILE *arquivo = fopen("dados.txt", "w");
-    if(arquivo == NULL){
-        printf("Erro ao abrir arquivo.\n");
-        return ERROR;
-    } else{
-        for(int i = 0; i<TAM; i++){
-            EstruturaAuxiliar *temp = &estruturaAuxiliar[i];
-
-            if(temp->elementos != NULL && temp->quantidade > 0){
-                fprintf(arquivo, "%d;%d", i+1, temp->tamanho);
-
-                for(int j = 0; j < temp->quantidade; j++){
-                    fprintf(arquivo, ";%d", temp->elementos[j]);
-                }
-                fprintf(arquivo, "\n");
-            }
-        }
-    }
-    fclose(arquivo);
-    return SUCESSO;
 }
 
 int criarEstruturaAuxiliar(int posicao, int tamanho)
@@ -135,6 +65,7 @@ int criarEstruturaAuxiliar(int posicao, int tamanho)
         return SEM_ESPACO_DE_MEMORIA;
     }
 }
+
 
 int inserirNumeroEmEstrutura(int posicao, int valor)
 {   
@@ -454,6 +385,70 @@ void destruirListaEncadeadaComCabecote(No **inicio)
         value = prox;
     }
 }
+
+int carregarArquivo(const char *dados) { 
+    FILE *arquivo = fopen(dados, "r");
+    int posicao, tamanho, numero, retorno;
+    char line[5000];
+
+    if(arquivo == NULL){
+        printf("Arquivo não existe.\n");
+        return ERROR;
+    } 
+    
+    while(fgets(line, sizeof(line), arquivo) != NULL){
+        line[strcspn(line, "\n")] = '\0';
+        
+        char *token = strtok(line, ";");
+        if(token == NULL){
+            continue;
+        }
+
+        posicao = atoi(token);
+        token = strtok(NULL, ";");
+        tamanho = atoi(token);
+
+        retorno = criarEstruturaAuxiliar(posicao, tamanho);
+
+        if(retorno != SUCESSO){
+            fclose(arquivo);
+            return ERROR;
+        }
+
+        while((token = strtok(NULL, ";")) != NULL){
+            retorno = inserirNumeroEmEstrutura(posicao, atoi(token));
+            if(retorno != SUCESSO){
+                fclose(arquivo);
+                return ERROR;
+            }
+        }
+    }
+    fclose(arquivo);
+    return SUCESSO;
+}
+
+int salvarArquivo(const char *dados){
+    FILE *arquivo = fopen("dados.txt", "w");
+    if(arquivo == NULL){
+        printf("Erro ao abrir arquivo.\n");
+        return ERROR;
+    } else{
+        for(int i = 0; i<TAM; i++){
+            if((estruturaAuxiliar[i].elementos != NULL) && (estruturaAuxiliar[i].quantidade > 0)){
+                fprintf(arquivo, "%d;%d", i+1, estruturaAuxiliar[i].tamanho);
+                for(int j = 0; j < estruturaAuxiliar[i].quantidade; j++){
+                    fprintf(arquivo, ";%d", estruturaAuxiliar[i].elementos[j]);
+                }
+                if(i>0){
+                    fprintf(arquivo, "\n");
+                }
+            }
+        }
+    }
+    fclose(arquivo);
+    return SUCESSO;
+}
+
 
 void finalizar()
 {   

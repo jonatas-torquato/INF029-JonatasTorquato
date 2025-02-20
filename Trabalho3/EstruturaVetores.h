@@ -14,6 +14,9 @@ typedef struct reg {
     struct reg *prox;
 } No;
 
+int carregarArquivo(const char *dados);
+int salvarArquivo(const char *dados);
+
 int criarEstruturaAuxiliar(int posicao, int tamanho);
 int inserirNumeroEmEstrutura(int posicao, int valor);
 int excluirNumeroDoFinaldaEstrutura(int posicao);
@@ -27,9 +30,6 @@ int getQuantidadeElementosEstruturaAuxiliar(int posicao);
 No *montarListaEncadeadaComCabecote();
 void getDadosListaEncadeadaComCabecote(No *inicio, int vetorAux[]);
 void destruirListaEncadeadaComCabecote(No **inicio);
-
-int carregarArquivo(const char *dados);
-int salvarArquivo(const char *dados);
 
 void inicializar();
 void finalizar();
